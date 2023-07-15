@@ -1,6 +1,7 @@
 package snownee.skillslots;
 
 import java.util.BitSet;
+import java.util.function.Predicate;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -369,6 +370,19 @@ public class SkillSlotsHandler extends SimpleContainer {
 			sound.ifLeft(s -> owner.playNotifySound(s, SoundSource.PLAYERS, 0.5F, 1));
 			sound.ifRight(s -> ((ServerPlayer) owner).connection.send(new ClientboundCustomSoundPacket(s, SoundSource.PLAYERS, owner.position(), 0.5F, 1, owner.level.getRandom().nextLong())));
 		}
+	}
+
+	public int findActivatedPassiveSkill(Predicate<Skill> predicate) {
+		for (int i = 0; i < MAX_SLOTS; i++) {
+			if (!toggles.get(i)) {
+				continue;
+			}
+			Skill skill = skills.get(i);
+			if (predicate.test(skill)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }
