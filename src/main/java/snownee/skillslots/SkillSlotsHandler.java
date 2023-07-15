@@ -26,6 +26,7 @@ import snownee.kiwi.util.MathUtil;
 import snownee.skillslots.client.SkillSlotsClient;
 import snownee.skillslots.duck.SkillSlotsPlayer;
 import snownee.skillslots.network.CStartUsingPacket;
+import snownee.skillslots.skill.SimpleSkill;
 import snownee.skillslots.skill.Skill;
 
 public class SkillSlotsHandler extends SimpleContainer {
@@ -240,6 +241,15 @@ public class SkillSlotsHandler extends SimpleContainer {
 
 	public void tick() {
 		acceleration = Math.max(0, acceleration - 0.005f);
+		for (int i = 0; i < MAX_SLOTS; i++) {
+			Skill skill = skills.get(i);
+			if (skill instanceof SimpleSkill simpleSkill && simpleSkill.wasOnCooldown) {
+				simpleSkill.wasOnCooldown = owner.getCooldowns().isOnCooldown(skill.item.getItem());
+				if (!simpleSkill.wasOnCooldown) {
+					playChargeCompleteSound(skill);
+				}
+			}
+		}
 		if (chargeIndex != -1) {
 			Skill skill = skills.get(chargeIndex);
 			int chargeDuration = skill.getChargeDuration(owner);

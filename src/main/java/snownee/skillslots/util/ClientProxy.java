@@ -22,7 +22,7 @@ import snownee.skillslots.client.SkillSlotsClient;
 import snownee.skillslots.client.gui.PlaceScreen;
 import snownee.skillslots.client.gui.UseScreen;
 import snownee.skillslots.compat.JEIPlugin;
-import snownee.skillslots.skill.Skill;
+import snownee.skillslots.skill.SimpleSkill;
 
 public class ClientProxy {
 	private static final boolean hasJEI = Platform.isModLoaded("jei");
@@ -49,7 +49,7 @@ public class ClientProxy {
 
 	public static void loadComplete() {
 		MenuScreens.register(SkillSlotsModule.PLACE.get(), PlaceScreen::new);
-		SkillSlotsClient.registerClientHandler(Skill.class, new SimpleSkillClientHandler());
+		SkillSlotsClient.registerClientHandler(SimpleSkill.class, new SimpleSkillClientHandler());
 	}
 
 	private static void onKeyInput(InputEvent.Key event) {

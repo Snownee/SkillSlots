@@ -5,6 +5,7 @@ import java.util.function.BiConsumer;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 
 import net.minecraft.client.KeyMapping;
@@ -88,6 +89,7 @@ public final class SkillSlotsClient {
 	}
 
 	public static <T extends Skill> SkillClientHandler<T> getClientHandler(T skill) {
+		Preconditions.checkArgument(!skill.isEmpty(), "Skill is empty");
 		return (SkillClientHandler<T>) CLIENT_HANDLERS.get(skill.getClass());
 	}
 

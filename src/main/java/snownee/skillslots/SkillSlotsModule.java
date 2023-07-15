@@ -22,7 +22,7 @@ import snownee.skillslots.item.UnlockSlotItem;
 import snownee.skillslots.menu.PlaceMenu;
 import snownee.skillslots.network.SAbortUsingPacket;
 import snownee.skillslots.network.SSyncSlotsPacket;
-import snownee.skillslots.skill.Skill;
+import snownee.skillslots.skill.SimpleSkill;
 import snownee.skillslots.util.ClientProxy;
 import snownee.skillslots.util.CommonProxy;
 
@@ -82,7 +82,7 @@ public class SkillSlotsModule extends AbstractModule {
 
 	@Override
 	protected void init(InitEvent event) {
-		event.enqueueWork(() -> SkillSlots.SKILL_FACTORIES.add(Skill::new));
+		event.enqueueWork(() -> SkillSlots.SKILL_FACTORIES.add(SimpleSkill::new));
 	}
 
 	@Override
