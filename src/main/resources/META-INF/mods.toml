@@ -1,0 +1,18 @@
+modLoader="javafml"
+loaderVersion="[42,)"
+license="ARR"
+
+[[mods]]
+modId="skillslots"
+version="${file.jarVersion}"
+displayName="Skill Slots"
+authors="Snownee"
+displayURL="https://minecraft.curseforge.com/projects/skill-slots"
+description="Adds player skill slots for item-based skills"
+
+[[dependencies.skillslots]]
+    modId="kiwi"
+    mandatory=true
+    versionRange="[8, 9)"
+    ordering="NONE"
+    side="BOTH"
