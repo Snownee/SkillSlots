@@ -260,10 +260,13 @@ public class UseScreen extends Screen {
 			name = names[index];
 		}
 		Objects.requireNonNull(minecraft);
-		float progress = skill.getDisplayChargeProgress(minecraft.player, pTicks);
-		if (progress != 1) {
-			float percent = 100 * progress;
-			name = Component.literal((int) percent + "%");
+		SkillClientHandler<Skill> handler = SkillSlotsClient.getClientHandler(skill);
+		if (handler != null) {
+			float progress = handler.getDisplayChargeProgress(skill, minecraft.player, pTicks);
+			if (progress != 1) {
+				float percent = 100 * progress;
+				name = Component.literal((int) percent + "%");
+			}
 		}
 
 		if (skill.isEmpty()) {
@@ -271,7 +274,6 @@ public class UseScreen extends Screen {
 			matrix.scale(0.75f, 0.75f, 0.75f);
 			drawCenteredString(matrix, font, name, 0, 0, textColor);
 		} else {
-			SkillClientHandler<Skill> handler = SkillSlotsClient.getClientHandler(skill);
 			if (handler != null) {
 				MutableInt textYOffset = new MutableInt(0);
 				handler.renderGUI(skill, matrix, xCenter, yCenter, scales[index], openTick, textColor, textYOffset);

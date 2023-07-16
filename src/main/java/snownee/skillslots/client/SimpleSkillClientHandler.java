@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 import snownee.skillslots.skill.SimpleSkill;
 import snownee.skillslots.util.ClientProxy;
 
@@ -22,13 +23,13 @@ public class SimpleSkillClientHandler implements SkillClientHandler<SimpleSkill>
 		Font font = Minecraft.getInstance().font;
 		ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
+		CompoundTag tag = skill.item.getTagElement("SkillSlots");
 		if (alpha > 0.3F) {
 			float yCenter2 = yCenter - 6 * (1 + 0.125f * scale);
 			PoseStack modelViewStack = RenderSystem.getModelViewStack();
 			modelViewStack.pushPose();
 			modelViewStack.translate(xCenter, yCenter2, 0);
 			scale = 1.5F + scale * 0.25F;
-			CompoundTag tag = skill.item.getTagElement("SkillSlots");
 			if (tag != null && tag.contains("IconScale", Tag.TAG_ANY_NUMERIC)) {
 				scale *= tag.getFloat("IconScale");
 			}
@@ -39,7 +40,11 @@ public class SimpleSkillClientHandler implements SkillClientHandler<SimpleSkill>
 			RenderSystem.applyModelViewMatrix();
 		}
 
-		if (skill.item.getCount() != 1) {
+		int count = skill.item.getCount();
+		if (tag != null && tag.contains("AlternativeAmount", Tag.TAG_ANY_NUMERIC)) {
+			count = tag.getInt("AlternativeAmount");
+		}
+		if (count != 1) {
 			matrix.pushPose();
 			matrix.translate(xCenter, yCenter + 10, 300);
 			matrix.scale(0.75f, 0.75f, 0.75f);
@@ -51,5 +56,15 @@ public class SimpleSkillClientHandler implements SkillClientHandler<SimpleSkill>
 	@Override
 	public void pickColor(SimpleSkill skill, IntUnaryOperator saturationModifier) {
 		skill.color = saturationModifier.applyAsInt(ClientProxy.pickItemColor(skill.item, skill.color));
+	}
+
+	@Override
+	public float getDisplayChargeProgress(SimpleSkill skill, Player player, float pTicks) {
+		int duration = skill.getChargeDuration(player);
+		if (duration == 0) {
+			float progress = player.getCooldowns().getCooldownPercent(skill.item.getItem(), pTicks);
+			return 1 - progress;
+		}
+		return SkillClientHandler.super.getDisplayChargeProgress(skill, player, pTicks);
 	}
 }

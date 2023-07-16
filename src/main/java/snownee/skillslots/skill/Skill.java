@@ -85,14 +85,6 @@ public abstract class Skill {
 		return progress >= getChargeDuration(player);
 	}
 
-	public float getDisplayChargeProgress(Player player, float pTicks) {
-		int duration = getChargeDuration(player);
-		if (duration == 0) {
-			return 1;
-		}
-		return Math.min(1, progress / duration);
-	}
-
 	public float getChargeSpeed(Player player) {
 		return speed;
 	}

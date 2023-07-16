@@ -131,16 +131,6 @@ public class SimpleSkill extends Skill {
 	}
 
 	@Override
-	public float getDisplayChargeProgress(Player player, float pTicks) {
-		int duration = getChargeDuration(player);
-		if (duration == 0) {
-			float progress = player.getCooldowns().getCooldownPercent(item.getItem(), pTicks);
-			return 1 - progress;
-		}
-		return super.getDisplayChargeProgress(player, pTicks);
-	}
-
-	@Override
 	@Nullable
 	public Either<SoundEvent, ResourceLocation> getChargeCompleteSound() {
 		CompoundTag tag = item.getTagElement("SkillSlots");
