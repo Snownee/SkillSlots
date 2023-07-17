@@ -1,0 +1,54 @@
+{
+  "Optional": [
+    {
+      "target": "snownee.skillslots.SlotUnlockRecipeModule"
+    }
+  ],
+  "KiwiPacket": [
+    {
+      "target": "snownee.skillslots.network.COpenContainerPacket",
+      "data": {
+        "value": "open_container"
+      }
+    },
+    {
+      "target": "snownee.skillslots.network.CStartUsingPacket",
+      "data": {
+        "value": "start_using"
+      }
+    },
+    {
+      "target": "snownee.skillslots.network.SAbortUsingPacket",
+      "data": {
+        "dir": "PLAY_TO_CLIENT",
+        "value": "abort_using"
+      }
+    },
+    {
+      "target": "snownee.skillslots.network.SSyncSlotsPacket",
+      "data": {
+        "dir": "PLAY_TO_CLIENT",
+        "value": "sync_slots"
+      }
+    }
+  ],
+  "KiwiConfig": [
+    {
+      "target": "snownee.skillslots.SkillSlotsCommonConfig"
+    }
+  ],
+  "KiwiModule": [
+    {
+      "target": "snownee.skillslots.SkillSlotsModule",
+      "data": {
+        "value": "skillslots"
+      }
+    },
+    {
+      "target": "snownee.skillslots.SlotUnlockRecipeModule",
+      "data": {
+        "value": "slot_unlock_recipe"
+      }
+    }
+  ]
+}

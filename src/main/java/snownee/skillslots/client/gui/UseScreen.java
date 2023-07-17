@@ -27,6 +27,7 @@ import snownee.skillslots.client.SkillClientHandler;
 import snownee.skillslots.client.SkillSlotsClient;
 import snownee.skillslots.network.COpenContainerPacket;
 import snownee.skillslots.skill.Skill;
+import snownee.skillslots.util.ClientProxy;
 
 public class UseScreen extends Screen {
 
@@ -331,12 +332,12 @@ public class UseScreen extends Screen {
 		}
 		InputConstants.Key pressedKey = InputConstants.getKey(key, scanCode);
 		for (int i = 0; i < handler.getContainerSize(); i++) {
-			if (SkillSlotsClient.kbUses[i].getKey().equals(pressedKey)) {
+			if (ClientProxy.getBoundKeyOf(SkillSlotsClient.kbUses[i]).equals(pressedKey)) {
 				startUse(i);
 				return true;
 			}
 		}
-		if (SkillSlotsClient.kbOpen.getKey().equals(pressedKey)) {
+		if (ClientProxy.getBoundKeyOf(SkillSlotsClient.kbOpen).equals(pressedKey)) {
 			onClose();
 			return true;
 		}

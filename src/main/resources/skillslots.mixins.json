@@ -5,10 +5,15 @@
   "refmap": "skillslots.refmap.json",
   "mixins": [
     "EntityMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "fabric.LivingEntityMixin",
+    "fabric.PlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
-  "minVersion": "0.8"
+  "minVersion": "0.8",
+  "client": [
+    "fabric.GuiMixin"
+  ]
 }

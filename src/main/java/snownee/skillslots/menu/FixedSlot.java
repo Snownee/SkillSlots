@@ -35,11 +35,4 @@ public class FixedSlot extends Slot {
 			return stack;
 		return super.getItem();
 	}
-
-	@Override
-	public boolean isSameInventory(Slot other) {
-		if (container == DUMMY)
-			return false;
-		return super.isSameInventory(other);
-	}
 }

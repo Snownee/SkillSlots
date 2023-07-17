@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "skillslots",
+  "version": "${version}",
+
+  "name": "Jade",
+  "description": "Adds player skill slots for item-based skills",
+  "authors": ["Snownee"],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/skill-slots-fabric",
+    "sources": "https://github.com/Snownee/SkillSlots",
+    "issues": "https://github.com/Snownee/SkillSlots/issues"
+  },
+
+  "license": "ARR",
+
+  "entrypoints": {
+    "main": [
+      "snownee.skillslots.util.CommonProxy"
+    ],
+    "client": [
+      "snownee.skillslots.util.ClientProxy"
+    ],
+    "jei_mod_plugin": [
+      "snownee.skillslots.compat.JEIPlugin"
+    ]
+  },
+  "mixins": [ "skillslots.mixins.json" ],
+
+  "depends": {
+    "fabricloader": ">=0.14",
+    "minecraft": "1.19.2",
+    "java": ">=17",
+    "kiwi": ">=8"
+  },
+
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/KzGQW7a"
+      }
+    }
+  }
+}

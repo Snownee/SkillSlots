@@ -1,53 +1,50 @@
 package snownee.skillslots.util;
 
+import com.mojang.brigadier.CommandDispatcher;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.fml.common.Mod;
-import snownee.kiwi.loader.Platform;
+import snownee.kiwi.Mod;
 import snownee.skillslots.SkillSlots;
 import snownee.skillslots.SkillSlotsModule;
 
 @Mod(SkillSlots.ID)
-public class CommonProxy {
-	public CommonProxy() {
-		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
-		MinecraftForge.EVENT_BUS.addListener(this::playerLoggedIn);
-		MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::causeDamage);
-		MinecraftForge.EVENT_BUS.addListener(this::clonePlayer);
-		if (Platform.isPhysicalClient()) {
-			ClientProxy.init();
-		}
-	}
+public class CommonProxy implements ModInitializer {
 
 	public static boolean isFakePlayer(Player player) {
-		return player instanceof FakePlayer;
+		return false;
 	}
 
 	public static double getReachDistance(Player player) {
-		return player.getReachDistance();
+		return player.isCreative() ? 6 : 3;
 	}
 
-	private void registerCommands(RegisterCommandsEvent event) {
-		SkillSlotsModule.registerCommands(event.getDispatcher());
+	@Override
+	public void onInitialize() {
+		CommandRegistrationCallback.EVENT.register(this::registerCommands);
+		ServerPlayConnectionEvents.JOIN.register(this::playerLoggedIn);
+		ServerPlayerEvents.COPY_FROM.register(this::clonePlayer);
 	}
 
-	private void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		if (event.getEntity() instanceof ServerPlayer player) {
-			SkillSlotsModule.playerLoggedIn(player);
-		}
+	private void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
+		SkillSlotsModule.registerCommands(dispatcher);
 	}
 
-	private void causeDamage(LivingDamageEvent event) {
-		SkillSlotsModule.causeDamage(event.getSource(), event.getEntity(), event.getAmount());
+	private void playerLoggedIn(ServerGamePacketListenerImpl handler, PacketSender sender, MinecraftServer server) {
+		SkillSlotsModule.playerLoggedIn(handler.player);
 	}
 
-	private void clonePlayer(PlayerEvent.Clone event) {
-		SkillSlotsModule.clonePlayer(event.getOriginal(), event.getEntity());
+	private void clonePlayer(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean alive) {
+		SkillSlotsModule.clonePlayer(oldPlayer, newPlayer);
 	}
 }

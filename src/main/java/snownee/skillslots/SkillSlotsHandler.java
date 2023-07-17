@@ -91,15 +91,7 @@ public class SkillSlotsHandler extends SimpleContainer {
 			Skill skill = SkillSlots.createSkill(stack);
 			skills.set(i, skill);
 			toggles.clear(i);
-			if (owner != null && owner.level.isClientSide && !skill.isEmpty()) {
-				SkillSlotsClient.getClientHandler(skill).pickColor(skill, color -> {
-					Vector3f hsv = MathUtil.RGBtoHSV(color);
-					if (Float.isNaN(hsv.x())) {
-						return 0xCCCCCC;
-					}
-					return Mth.hsvToRgb(hsv.x(), hsv.y(), 0.9F);
-				});
-			}
+			updateColor(i);
 			if (i == chargeIndex) {
 				updateCharge();
 			}
@@ -110,6 +102,25 @@ public class SkillSlotsHandler extends SimpleContainer {
 			if (chargeIndex != -1) {
 				dirty = true;
 			}
+		}
+	}
+
+	public void updateColor(int slot) {
+		Skill skill = skills.get(slot);
+		if (owner != null && owner.level.isClientSide && !skill.isEmpty()) {
+			SkillSlotsClient.getClientHandler(skill).pickColor(skill, color -> {
+				Vector3f hsv = MathUtil.RGBtoHSV(color);
+				if (Float.isNaN(hsv.x())) {
+					return 0xCCCCCC;
+				}
+				return Mth.hsvToRgb(hsv.x(), hsv.y(), 0.9F);
+			});
+		}
+	}
+
+	public void updateColors() {
+		for (int i = 0; i < MAX_SLOTS; i++) {
+			updateColor(i);
 		}
 	}
 
