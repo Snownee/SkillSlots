@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.InstrumentItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ThrowablePotionItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -109,7 +110,7 @@ public class SimpleSkill extends Skill {
 		if (tag != null && tag.contains("UseDuration", Tag.TAG_ANY_NUMERIC)) {
 			return tag.getInt("UseDuration");
 		}
-		if (item.getItem() instanceof InstrumentItem) {
+		if (item.getItem() instanceof InstrumentItem || item.getItem() instanceof ThrowablePotionItem) {
 			return 0;
 		}
 		return super.getUseDuration();

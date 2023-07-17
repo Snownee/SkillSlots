@@ -9,9 +9,11 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.helpers.IColorHelper;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import snownee.skillslots.SkillSlots;
+import snownee.skillslots.SkillSlotsHandler;
 import snownee.skillslots.SkillSlotsModule;
 
 @JeiPlugin
@@ -41,6 +43,7 @@ public class JEIPlugin implements IModPlugin {
 	@Override
 	public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
 		colorHelper = jeiRuntime.getJeiHelpers().getColorHelper();
+		SkillSlotsHandler.of(Minecraft.getInstance().player).updateColors();
 	}
 
 	@Override

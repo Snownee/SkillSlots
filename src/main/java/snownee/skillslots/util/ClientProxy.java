@@ -2,6 +2,8 @@ package snownee.skillslots.util;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -75,5 +77,9 @@ public class ClientProxy {
 
 	private static void registerItemColors(RegisterColorHandlersEvent.Item event) {
 		SkillSlotsClient.registerItemColors(event::register);
+	}
+
+	public static InputConstants.Key getBoundKeyOf(KeyMapping keyMapping) {
+		return keyMapping.getKey();
 	}
 }
