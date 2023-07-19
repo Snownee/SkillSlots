@@ -261,7 +261,10 @@ public class UseScreen extends Screen {
 			name = names[index];
 		}
 		Objects.requireNonNull(minecraft);
-		SkillClientHandler<Skill> handler = SkillSlotsClient.getClientHandler(skill);
+		SkillClientHandler<Skill> handler = null;
+		if (!skill.isEmpty()) {
+			handler = SkillSlotsClient.getClientHandler(skill);
+		}
 		if (handler != null) {
 			float progress = handler.getDisplayChargeProgress(skill, minecraft.player, pTicks);
 			if (progress != 1) {

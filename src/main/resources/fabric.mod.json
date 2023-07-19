@@ -3,7 +3,7 @@
   "id": "skillslots",
   "version": "${version}",
 
-  "name": "Jade",
+  "name": "Skill Slots",
   "description": "Adds player skill slots for item-based skills",
   "authors": ["Snownee"],
   "contact": {
