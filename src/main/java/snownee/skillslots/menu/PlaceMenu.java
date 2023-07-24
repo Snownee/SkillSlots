@@ -37,7 +37,7 @@ public class PlaceMenu extends AbstractContainerMenu {
 		ItemStack powderSnow = new ItemStack(Items.POWDER_SNOW_BUCKET);
 		Style style = Style.EMPTY.withItalic(false);
 		powderSnow.setHoverName(Component.translatable("msg.skillslots.closePlace1").withStyle(style));
-		if (player.level.isClientSide && ++OPEN_COUNT % 20 == 2) {
+		if (player.level().isClientSide && ++OPEN_COUNT % 20 == 2) {
 			ListTag lore = new ListTag();
 			style = style.withColor(ChatFormatting.GRAY);
 			lore.add(StringTag.valueOf(Component.Serializer.toJson(Component.translatable("msg.skillslots.closePlace2").withStyle(style))));
@@ -87,7 +87,7 @@ public class PlaceMenu extends AbstractContainerMenu {
 	@Override
 	public void removed(Player playerIn) {
 		super.removed(playerIn);
-		if (!playerIn.level.isClientSide) {
+		if (!playerIn.level().isClientSide) {
 			handler.dirty = true;
 		}
 	}

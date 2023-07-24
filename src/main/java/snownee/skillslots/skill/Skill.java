@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.datafixers.util.Either;
-
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -94,7 +93,7 @@ public abstract class Skill {
 	}
 
 	@Nullable
-	public Either<SoundEvent, ResourceLocation> getChargeCompleteSound() {
-		return Either.left(SkillSlotsModule.POTION_CHARGE_COMPLETE_SOUND.get());
+	public Holder<SoundEvent> getChargeCompleteSound() {
+		return BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SkillSlotsModule.POTION_CHARGE_COMPLETE_SOUND.get());
 	}
 }

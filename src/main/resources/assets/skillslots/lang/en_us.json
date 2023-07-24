@@ -22,5 +22,6 @@
   "keybind.skillslots.use.3": "Use Skill 3",
   "keybind.skillslots.use.4": "Use Skill 4",
   "gui.skillslots.keygroup": "Skill Slots",
-  "gui.skillslots.use.title": "Use skill"
+  "gui.skillslots.use.title": "Use skill",
+  "skillslots.config.damageAcceleration.desc": "Damaging mobs can speed up refilling"
 }

@@ -5,16 +5,14 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
-import com.mojang.datafixers.util.Either;
-import com.mojang.math.Vector3f;
-
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.protocol.game.ClientboundCustomSoundPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -107,7 +105,7 @@ public class SkillSlotsHandler extends SimpleContainer {
 
 	public void updateColor(int slot) {
 		Skill skill = skills.get(slot);
-		if (owner != null && owner.level.isClientSide && !skill.isEmpty()) {
+		if (owner != null && owner.level().isClientSide && !skill.isEmpty()) {
 			SkillSlotsClient.getClientHandler(skill).pickColor(skill, color -> {
 				Vector3f hsv = MathUtil.RGBtoHSV(color);
 				if (Float.isNaN(hsv.x())) {
@@ -308,7 +306,7 @@ public class SkillSlotsHandler extends SimpleContainer {
 		if (skill.canBeToggled()) {
 			toggles.flip(slot);
 			skill.onToggled(owner, this, slot);
-			if (owner.level.isClientSide) {
+			if (owner.level().isClientSide) {
 				CStartUsingPacket.send(slot);
 			}
 			return;
@@ -320,7 +318,7 @@ public class SkillSlotsHandler extends SimpleContainer {
 			// TODO reduce player speed
 			useIndex = slot;
 		}
-		if (owner.level.isClientSide) {
+		if (owner.level().isClientSide) {
 			CStartUsingPacket.send(slot);
 		}
 	}
@@ -373,13 +371,12 @@ public class SkillSlotsHandler extends SimpleContainer {
 	}
 
 	private void playChargeCompleteSound(Skill skill) {
-		if (owner.level.isClientSide || !SkillSlotsCommonConfig.playChargeCompleteSound) {
+		if (owner.level().isClientSide || !SkillSlotsCommonConfig.playChargeCompleteSound) {
 			return;
 		}
-		@Nullable Either<SoundEvent, ResourceLocation> sound = skill.getChargeCompleteSound();
-		if (sound != null) {
-			sound.ifLeft(s -> owner.playNotifySound(s, SoundSource.PLAYERS, 0.5F, 1));
-			sound.ifRight(s -> ((ServerPlayer) owner).connection.send(new ClientboundCustomSoundPacket(s, SoundSource.PLAYERS, owner.position(), 0.5F, 1, owner.level.getRandom().nextLong())));
+		@Nullable Holder<SoundEvent> sound = skill.getChargeCompleteSound();
+		if (sound != null && sound.isBound()) {
+			((ServerPlayer) owner).connection.send(new ClientboundSoundPacket(sound, SoundSource.PLAYERS, owner.position().x(), owner.position().y(), owner.position().z(), 0.5F, 1, owner.level().getRandom().nextLong()));
 		}
 	}
 
