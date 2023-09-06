@@ -1,5 +1,7 @@
 package snownee.skillslots.util;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -10,6 +12,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import snownee.kiwi.loader.Platform;
 import snownee.skillslots.SkillSlotsModule;
@@ -45,6 +48,11 @@ public class ClientProxy implements ClientModInitializer {
 
 	public static InputConstants.Key getBoundKeyOf(KeyMapping keyMapping) {
 		return KeyBindingHelper.getBoundKeyOf(keyMapping);
+	}
+
+	@Nullable
+	public static Player getPlayer() {
+		return Minecraft.getInstance().player;
 	}
 
 	@Override
