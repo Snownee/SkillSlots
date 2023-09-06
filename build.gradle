@@ -133,7 +133,7 @@ unifiedPublishing {
             id = "889948" // Required, must be a string, ID of CurseForge project
 
             relations { // Optional, Inferred from the relations above by default
-                depends "kiwi"
+                depends "kiwi-fabric"
                 optional "jei"
             }
         }
