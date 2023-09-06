@@ -1,5 +1,6 @@
 package snownee.skillslots.util;
 
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.InputConstants;
@@ -7,6 +8,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -81,5 +83,10 @@ public class ClientProxy {
 
 	public static InputConstants.Key getBoundKeyOf(KeyMapping keyMapping) {
 		return keyMapping.getKey();
+	}
+
+	@Nullable
+	public static Player getPlayer() {
+		return Minecraft.getInstance().player;
 	}
 }
