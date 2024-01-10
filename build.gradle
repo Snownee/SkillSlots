@@ -287,7 +287,6 @@ unifiedPublishing {
             modrinth {
                 token = System.getenv("MODRINTH_TOKEN")
                 id = "99ZMIXIw" // Required, must be a string, ID of Modrinth project
-                displayName = project.mod_version
 
                 relations { // Optional, Inferred from the relations above by default
                     depends "kiwi"
