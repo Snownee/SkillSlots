@@ -48,10 +48,6 @@ public class SkillSlotsModule extends AbstractModule {
 		dispatcher.register(SkillSlotsCommand.init(dispatcher));
 	}
 
-	public static void playerLoggedIn(ServerPlayer player) {
-		sync(player);
-	}
-
 	public static void causeDamage(DamageSource source, LivingEntity target, float amount) {
 		if (target.level.isClientSide) {
 			return;

@@ -5,14 +5,10 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.player.Player;
 import snownee.kiwi.Mod;
 import snownee.skillslots.SkillSlots;
@@ -32,16 +28,11 @@ public class CommonProxy implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		CommandRegistrationCallback.EVENT.register(this::registerCommands);
-		ServerPlayConnectionEvents.JOIN.register(this::playerLoggedIn);
 		ServerPlayerEvents.COPY_FROM.register(this::clonePlayer);
 	}
 
 	private void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
 		SkillSlotsModule.registerCommands(dispatcher);
-	}
-
-	private void playerLoggedIn(ServerGamePacketListenerImpl handler, PacketSender sender, MinecraftServer server) {
-		SkillSlotsModule.playerLoggedIn(handler.player);
 	}
 
 	private void clonePlayer(ServerPlayer oldPlayer, ServerPlayer newPlayer, boolean alive) {
