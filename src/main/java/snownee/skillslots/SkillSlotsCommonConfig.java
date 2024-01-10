@@ -1,7 +1,6 @@
 package snownee.skillslots;
 
 import snownee.kiwi.config.KiwiConfig;
-import snownee.kiwi.config.KiwiConfig.Comment;
 import snownee.kiwi.config.KiwiConfig.LevelRestart;
 import snownee.kiwi.config.KiwiConfig.Path;
 import snownee.kiwi.config.KiwiConfig.Range;
@@ -11,7 +10,6 @@ public final class SkillSlotsCommonConfig {
 
 	public static boolean naturallyCharging = true;
 	@Range(min = 0, max = 10)
-	@Comment("Damaging mobs can speed up refilling")
 	public static double damageAcceleration = 1;
 	public static boolean interruptedOnHurt;
 	public static boolean playChargeCompleteSound = true;

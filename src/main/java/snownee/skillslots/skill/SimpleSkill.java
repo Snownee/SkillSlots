@@ -2,8 +2,7 @@ package snownee.skillslots.skill;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.mojang.datafixers.util.Either;
-
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ServerboundInteractPacket;
@@ -38,7 +37,7 @@ public class SimpleSkill extends Skill {
 
 	@Override
 	public void finishUsing(Player player, int slot) {
-		Level level = player.level;
+		Level level = player.level();
 		ServerPlayer serverPlayer = level.isClientSide ? null : (ServerPlayer) player;
 		ItemStack prev = player.getMainHandItem();
 		ItemStack copy = this.item.copy();
@@ -47,10 +46,12 @@ public class SimpleSkill extends Skill {
 		player.setItemInHand(InteractionHand.MAIN_HAND, copy);
 
 		Vec3 start = player.getEyePosition(1);
-		Vec3 end = start.add(player.getLookAngle().scale(CommonProxy.getReachDistance(player)));
+		Vec3 end = start.add(player.getLookAngle().scale(CommonProxy.getBlockReach(player)));
 		HitResult hit = level.clip(new ClipContext(start, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 		if (hit.getType() != HitResult.Type.MISS) {
 			end = hit.getLocation();
+		} else {
+			end = start.add(player.getLookAngle().scale(CommonProxy.getEntityReach(player)));
 		}
 		EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(level, player, start, end, player.getBoundingBox().expandTowards(end).inflate(1), entity -> entity != player);
 		if (entityHit != null) {
@@ -132,8 +133,7 @@ public class SimpleSkill extends Skill {
 	}
 
 	@Override
-	@Nullable
-	public Either<SoundEvent, ResourceLocation> getChargeCompleteSound() {
+	public @Nullable Holder<SoundEvent> getChargeCompleteSound() {
 		CompoundTag tag = item.getTagElement("SkillSlots");
 		if (tag != null && tag.contains("ChargeCompleteSound", Tag.TAG_STRING)) {
 			String s = tag.getString("ChargeCompleteSound");
@@ -142,7 +142,7 @@ public class SimpleSkill extends Skill {
 			}
 			ResourceLocation id = ResourceLocation.tryParse(s);
 			if (id != null) {
-				return Either.right(id);
+				return Holder.direct(SoundEvent.createVariableRangeEvent(id));
 			}
 		}
 		return super.getChargeCompleteSound();

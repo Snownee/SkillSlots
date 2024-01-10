@@ -13,6 +13,6 @@ description="Adds player skill slots for item-based skills"
 [[dependencies.skillslots]]
     modId="kiwi"
     mandatory=true
-    versionRange="[8, 9)"
+    versionRange="[11, 12)"
     ordering="NONE"
     side="BOTH"

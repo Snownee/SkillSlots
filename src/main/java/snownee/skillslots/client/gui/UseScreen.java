@@ -3,6 +3,7 @@ package snownee.skillslots.client.gui;
 import java.util.Objects;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -12,10 +13,10 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -55,7 +56,7 @@ public class UseScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack matrix, int mouseX, int mouseY, float pTicks) {
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float pTicks) {
 		if (handler == null) {
 			return;
 		}
@@ -84,19 +85,19 @@ public class UseScreen extends Screen {
 		int oClickIndex = clickIndex;
 		float offset = 35 + openTick * 25;
 		if (SkillSlotsCommonConfig.maxSlots == 1) {
-			drawButton(matrix, xCenter, yCenter, mouseX, mouseY, 0, pTicks);
+			drawButton(graphics, xCenter, yCenter, mouseX, mouseY, 0, pTicks);
 		} else if (SkillSlotsCommonConfig.maxSlots == 2) {
-			drawButton(matrix, xCenter - offset, yCenter, mouseX, mouseY, 0, pTicks);
-			drawButton(matrix, xCenter + offset, yCenter, mouseX, mouseY, 1, pTicks);
+			drawButton(graphics, xCenter - offset, yCenter, mouseX, mouseY, 0, pTicks);
+			drawButton(graphics, xCenter + offset, yCenter, mouseX, mouseY, 1, pTicks);
 		} else if (SkillSlotsCommonConfig.maxSlots == 3) {
-			drawButton(matrix, xCenter - offset, yCenter, mouseX, mouseY, 0, pTicks);
-			drawButton(matrix, xCenter, yCenter - offset, mouseX, mouseY, 1, pTicks);
-			drawButton(matrix, xCenter + offset, yCenter, mouseX, mouseY, 2, pTicks);
+			drawButton(graphics, xCenter - offset, yCenter, mouseX, mouseY, 0, pTicks);
+			drawButton(graphics, xCenter, yCenter - offset, mouseX, mouseY, 1, pTicks);
+			drawButton(graphics, xCenter + offset, yCenter, mouseX, mouseY, 2, pTicks);
 		} else if (SkillSlotsCommonConfig.maxSlots == 4) {
-			drawButton(matrix, xCenter - offset, yCenter, mouseX, mouseY, 0, pTicks);
-			drawButton(matrix, xCenter, yCenter - offset, mouseX, mouseY, 1, pTicks);
-			drawButton(matrix, xCenter + offset, yCenter, mouseX, mouseY, 2, pTicks);
-			drawButton(matrix, xCenter, yCenter + offset, mouseX, mouseY, 3, pTicks);
+			drawButton(graphics, xCenter - offset, yCenter, mouseX, mouseY, 0, pTicks);
+			drawButton(graphics, xCenter, yCenter - offset, mouseX, mouseY, 1, pTicks);
+			drawButton(graphics, xCenter + offset, yCenter, mouseX, mouseY, 2, pTicks);
+			drawButton(graphics, xCenter, yCenter + offset, mouseX, mouseY, 3, pTicks);
 		}
 		if (clickIndex < 0) {
 			int range = SkillSlotsCommonConfig.maxSlots == 1 ? 60 : 120;
@@ -106,7 +107,7 @@ public class UseScreen extends Screen {
 			Skill skill = handler.skills.get(clickIndex);
 			if (skill.isEmpty() && clickIndex < handler.getContainerSize() && SkillSlotsCommonConfig.playerCustomizable) {
 				Component tooltip = Component.translatable("tip.skillslots.emptySlot", SkillSlotsClient.kbOpen.getTranslatedKeyMessage());
-				renderTooltip(matrix, tooltip, mouseX, mouseY);
+				graphics.renderTooltip(font, tooltip, mouseX, mouseY);
 			}
 			if (!skill.isEmpty() && oClickIndex != clickIndex) {
 				SkillSlotsClient.playSound(SkillSlotsModule.HOVER_SOUND.get());
@@ -115,11 +116,11 @@ public class UseScreen extends Screen {
 
 		RenderSystem.disableBlend();
 
-		super.render(matrix, mouseX, mouseY, pTicks);
+		super.render(graphics, mouseX, mouseY, pTicks);
 	}
 
 	@SuppressWarnings("null")
-	private void drawButton(PoseStack matrix, float xCenter, float yCenter, int mouseX, int mouseY, int index, float pTicks) {
+	private void drawButton(GuiGraphics graphics, float xCenter, float yCenter, int mouseX, int mouseY, int index, float pTicks) {
 		Skill skill = handler.skills.get(index);
 		float a = .5F * openTick;
 
@@ -151,10 +152,10 @@ public class UseScreen extends Screen {
 			g = .1F;
 			b = .1F;
 		}
+		PoseStack matrix = graphics.pose();
 		Matrix4f matrix4f = matrix.last().pose();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		RenderSystem.disableTexture();
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
 		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -247,7 +248,6 @@ public class UseScreen extends Screen {
 		buffer.vertex(matrix4f, xCenter - hdborder, yCenter, 0.0F).color(r, g, b, a).endVertex();
 		buffer.vertex(matrix4f, xCenter, yCenter - hdborder, 0.0F).color(r, g, b, a).endVertex();
 		BufferUploader.drawWithShader(buffer.end());
-		RenderSystem.enableTexture();
 
 		refreshName(index);
 		matrix.pushPose();
@@ -276,15 +276,15 @@ public class UseScreen extends Screen {
 		if (skill.isEmpty()) {
 			matrix.translate(xCenter, yCenter - 3, 0);
 			matrix.scale(0.75f, 0.75f, 0.75f);
-			drawCenteredString(matrix, font, name, 0, 0, textColor);
+			graphics.drawCenteredString(font, name, 0, 0, textColor);
 		} else {
 			if (handler != null) {
 				MutableInt textYOffset = new MutableInt(0);
-				handler.renderGUI(skill, matrix, xCenter, yCenter, scales[index], openTick, textColor, textYOffset);
+				handler.renderGUI(skill, graphics, xCenter, yCenter, scales[index], openTick, textColor, textYOffset);
 				if (textYOffset.getValue() != Integer.MIN_VALUE) {
 					matrix.translate(xCenter, yCenter + 10 + textYOffset.getValue(), 300);
 					matrix.scale(0.75f, 0.75f, 0.75f);
-					drawCenteredString(matrix, font, name, 0, 0, textColor);
+					graphics.drawCenteredString(font, name, 0, 0, textColor);
 				}
 			}
 		}

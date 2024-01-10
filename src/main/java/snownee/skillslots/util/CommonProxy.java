@@ -27,8 +27,12 @@ public class CommonProxy {
 		return player instanceof FakePlayer;
 	}
 
-	public static double getReachDistance(Player player) {
-		return player.getReachDistance();
+	public static double getEntityReach(Player player) {
+		return player.getEntityReach();
+	}
+
+	public static double getBlockReach(Player player) {
+		return player.getBlockReach();
 	}
 
 	private void registerCommands(RegisterCommandsEvent event) {
