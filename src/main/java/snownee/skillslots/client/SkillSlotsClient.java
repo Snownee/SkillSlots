@@ -12,7 +12,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.ItemLike;
 import snownee.skillslots.SkillSlotsCommonConfig;
@@ -60,10 +59,6 @@ public final class SkillSlotsClient {
 		SkillSlotsHandler handler = SkillSlotsHandler.of(mc.player);
 		while (kbOpen.consumeClick()) {
 			if (SkillSlotsCommonConfig.playerCustomizable && mc.player.isShiftKeyDown()) {
-				if (handler.getContainerSize() == 0) {
-					mc.player.displayClientMessage(Component.translatable("msg.skillslots.noSlots"), true);
-					break;
-				}
 				COpenContainerPacket.I.sendToServer($ -> {
 				});
 			} else {

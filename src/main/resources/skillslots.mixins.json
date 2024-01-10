@@ -5,7 +5,8 @@
   "refmap": "skillslots.refmap.json",
   "mixins": [
     "EntityMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "ServerLevelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

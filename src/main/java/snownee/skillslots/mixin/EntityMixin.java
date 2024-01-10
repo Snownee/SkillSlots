@@ -14,14 +14,14 @@ import snownee.skillslots.SkillSlotsHandler;
 public class EntityMixin {
 
 	@Inject(method = "setRemoved", at = @At("HEAD"))
-	private void everpotion$setRemoved(Entity.RemovalReason removalReason, CallbackInfo ci) {
+	private void skillslots$setRemoved(Entity.RemovalReason removalReason, CallbackInfo ci) {
 		if (this instanceof SkillSlotsPlayer player) {
 			player.skillslots$getHandler().setOwner(null);
 		}
 	}
 
 	@Inject(method = "unsetRemoved", at = @At("HEAD"))
-	private void everpotion$unsetRemoved(CallbackInfo ci) {
+	private void skillslots$unsetRemoved(CallbackInfo ci) {
 		Entity entity = (Entity) (Object) this;
 		if (entity instanceof Player player) {
 			SkillSlotsHandler.of(player).setOwner(player);

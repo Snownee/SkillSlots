@@ -3,13 +3,17 @@ package snownee.skillslots;
 import java.util.List;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+
 import com.google.common.collect.Lists;
+import com.mojang.logging.LogUtils;
 
 import net.minecraft.world.item.ItemStack;
 import snownee.skillslots.skill.Skill;
 
 public class SkillSlots {
 	public static final String ID = "skillslots";
+	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public static final List<Function<ItemStack, Skill>> SKILL_FACTORIES = Lists.newArrayList();
 
