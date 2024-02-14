@@ -41,6 +41,8 @@ public class SimpleSkill extends Skill {
 		ServerPlayer serverPlayer = level.isClientSide ? null : (ServerPlayer) player;
 		ItemStack prev = player.getMainHandItem();
 		ItemStack copy = this.item.copy();
+		CompoundTag tag = copy.getOrCreateTagElement("SkillSlots");
+		tag.putBoolean("IsUsing", true);
 		Inventory inventory = player.getInventory();
 		inventory.items.set(inventory.selected, copy); // avoid emit game event
 		player.setItemInHand(InteractionHand.MAIN_HAND, copy);
@@ -90,6 +92,14 @@ public class SimpleSkill extends Skill {
 		}
 
 		ItemStack now = player.getMainHandItem();
+		tag = now.getOrCreateTagElement("SkillSlots");
+		tag.remove("IsUsing");
+		if (tag.isEmpty()) {
+			now.getOrCreateTag().remove("SkillSlots");
+			if (now.getOrCreateTag().isEmpty()) {
+				now.setTag(null);
+			}
+		}
 		if (!ItemStack.matches(item, now)) {
 			SkillSlotsHandler handler = SkillSlotsHandler.of(player);
 			if (handler.canPlaceItem(slot, now)) {
