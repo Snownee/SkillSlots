@@ -8,8 +8,9 @@ sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.mod_name
-version = project.minecraft_version + "-fabric-" + project.mod_version
+version = project.minecraft_version + "-Fabric-" + project.mod_version
 group = project.mod_base_package
+var realVersion = project.mod_version + "+fabric"
 
 repositories {
     maven {
@@ -36,6 +37,7 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven { url "https://api.modrinth.com/maven" }
 }
 
 dependencies {
@@ -48,9 +50,9 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     modImplementation("curse.maven:jei-238222:4644452")
-    modImplementation("curse.maven:jade-324717:4653227")
-    modImplementation("curse.maven:kiwi-549404:4571945")
-    annotationProcessor "curse.maven:kiwi-549404:4571945"
+    modImplementation "maven.modrinth:jade:11.12.3+fabric"
+    modImplementation "maven.modrinth:kiwi:11.8.28+fabric"
+    annotationProcessor "maven.modrinth:kiwi:11.8.28+fabric"
 }
 
 loom {
@@ -61,10 +63,10 @@ loom {
 }
 
 processResources {
-    inputs.property "version", project.mod_version
+    inputs.property "version", realVersion
 
     filesMatching("fabric.mod.json") {
-        expand "version": project.mod_version
+        expand "version": realVersion
     }
 }
 
@@ -119,11 +121,11 @@ publishing {
 unifiedPublishing {
     project {
         displayName = "[Fabric $project.supported_version] $project.mod_version"
-        version = project.mod_version // Optional, Inferred from project by default
+        version = realVersion // Optional, Inferred from project by default
         changelog = file("CHANGELOG.md").text // Optional, in markdown format
         releaseType = project.release_type // Optional, use "release", "beta" or "alpha"
         gameVersions = ["1.20", "1.20.1"]
-        gameLoaders = ["fabric"]
+        gameLoaders = ["fabric", "quilt"]
 
         mainPublication tasks.remapJar // Declares the publicated jar
 
