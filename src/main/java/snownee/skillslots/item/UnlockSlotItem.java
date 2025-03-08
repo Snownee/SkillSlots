@@ -2,6 +2,8 @@ package snownee.skillslots.item;
 
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -20,10 +22,12 @@ import net.minecraft.world.level.Level;
 import snownee.kiwi.item.ItemCategoryFiller;
 import snownee.kiwi.item.ModItem;
 import snownee.kiwi.util.NBTHelper;
+import snownee.kiwi.util.NotNullByDefault;
 import snownee.skillslots.SkillSlotsCommonConfig;
 import snownee.skillslots.SkillSlotsHandler;
 import snownee.skillslots.client.SkillSlotsClient;
 
+@NotNullByDefault
 public class UnlockSlotItem extends ModItem implements ItemCategoryFiller {
 
 	public UnlockSlotItem() {
@@ -79,7 +83,7 @@ public class UnlockSlotItem extends ModItem implements ItemCategoryFiller {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
+	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		if (NBTHelper.of(stack).getBoolean("Force")) {
 			tooltip.add(Component.translatable("tip.skillslots.force").withStyle(ChatFormatting.RED));
 		}
@@ -97,16 +101,12 @@ public class UnlockSlotItem extends ModItem implements ItemCategoryFiller {
 
 	@Override
 	public Rarity getRarity(ItemStack stack) {
-		switch (getTier(stack)) {
-			default:
-				return Rarity.COMMON;
-			case 2:
-				return Rarity.UNCOMMON;
-			case 3:
-				return Rarity.RARE;
-			case 4:
-				return Rarity.EPIC;
-		}
+		return switch (getTier(stack)) {
+			case 2 -> Rarity.UNCOMMON;
+			case 3 -> Rarity.RARE;
+			case 4 -> Rarity.EPIC;
+			default -> Rarity.COMMON;
+		};
 	}
 
 	@Override

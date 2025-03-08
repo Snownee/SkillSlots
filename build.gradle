@@ -27,6 +27,7 @@ apply plugin: 'maven-publish'
 version = "${minecraft_version}-forge-${mod_version}"
 group = "${mod_base_package}" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = mod_name
+var realVersion = mod_version + "+forge"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -177,6 +178,7 @@ repositories {
             includeGroup "curse.maven"
         }
     }
+    maven { url "https://api.modrinth.com/maven" }
     flatDir {
         dir 'libs'
     }
@@ -203,11 +205,10 @@ dependencies {
     //runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
     // implementation fg.deobf("com.tterrag.registrate:Registrate:MC${mc_version}-${registrate_version}") // Adds registrate as a dependency
 
-    implementation fg.deobf("curse.maven:jei-238222:4712868")
-    implementation fg.deobf("curse.maven:jade-324717:4986594")
-    //implementation fg.deobf("curse.maven:lychee-567403:4547502")
-    implementation fg.deobf("curse.maven:kiwi-303657:4688568")
-    annotationProcessor "curse.maven:kiwi-303657:4688568"
+    implementation fg.deobf("maven.modrinth:jei:WTWP98yg")
+    implementation fg.deobf("maven.modrinth:jade:11.13.1+forge")
+    implementation fg.deobf("maven.modrinth:kiwi:11.8.30+forge")
+    annotationProcessor "maven.modrinth:kiwi:11.8.30+forge"
 
     // Examples using mod jars from ./libs
     //implementation fg.deobf("libs:Kiwi-1.18-forge:5.2.4")
@@ -232,7 +233,7 @@ jar {
                 "Specification-Vendor"    : mod_authors,
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : mod_version,
+                "Implementation-Version"  : realVersion,
                 "Implementation-Vendor"   : mod_authors,
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 "MixinConfigs"            : "${mod_id}.mixins.json"
@@ -264,11 +265,11 @@ publishing {
 unifiedPublishing {
     project {
         displayName = "[Forge $project.supported_version] $project.mod_version"
-        version = project.mod_version // Optional, Inferred from project by default
+        version = realVersion // Optional, Inferred from project by default
         changelog = file("CHANGELOG.md").text // Optional, in markdown format
         releaseType = project.release_type // Optional, use "release", "beta" or "alpha"
         gameVersions = ["1.20", "1.20.1"]
-        gameLoaders = ["forge"]
+        gameLoaders = ["forge", "neoforge"]
 
         mainPublication tasks.jar // Declares the publicated jar
 

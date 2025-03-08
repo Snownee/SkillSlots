@@ -22,12 +22,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import snownee.kiwi.util.MathUtil;
+import snownee.kiwi.util.NotNullByDefault;
 import snownee.skillslots.client.SkillSlotsClient;
 import snownee.skillslots.duck.SkillSlotsPlayer;
 import snownee.skillslots.network.CStartUsingPacket;
 import snownee.skillslots.skill.SimpleSkill;
 import snownee.skillslots.skill.Skill;
 
+@NotNullByDefault
 public class SkillSlotsHandler extends SimpleContainer {
 
 	public static final int MAX_SLOTS = 4;
@@ -38,6 +40,7 @@ public class SkillSlotsHandler extends SimpleContainer {
 	public int useTick;
 	public float acceleration;
 	public boolean dirty;
+	@Nullable
 	private Player owner;
 	private int slots;
 
@@ -45,7 +48,7 @@ public class SkillSlotsHandler extends SimpleContainer {
 		super(MAX_SLOTS);
 	}
 
-	public SkillSlotsHandler(Player owner) {
+	public SkillSlotsHandler(@Nullable Player owner) {
 		this();
 		this.owner = owner;
 	}
@@ -106,13 +109,14 @@ public class SkillSlotsHandler extends SimpleContainer {
 	public void updateColor(int slot) {
 		Skill skill = skills.get(slot);
 		if (owner != null && owner.level().isClientSide && !skill.isEmpty()) {
-			SkillSlotsClient.getClientHandler(skill).pickColor(skill, color -> {
-				Vector3f hsv = MathUtil.RGBtoHSV(color);
-				if (Float.isNaN(hsv.x())) {
-					return 0xCCCCCC;
-				}
-				return Mth.hsvToRgb(hsv.x(), hsv.y(), 0.9F);
-			});
+			SkillSlotsClient.getClientHandler(skill).pickColor(
+					skill, color -> {
+						Vector3f hsv = MathUtil.RGBtoHSV(color);
+						if (Float.isNaN(hsv.x())) {
+							return 0xCCCCCC;
+						}
+						return Mth.hsvToRgb(hsv.x(), hsv.y(), 0.9F);
+					});
 		}
 	}
 
@@ -250,6 +254,9 @@ public class SkillSlotsHandler extends SimpleContainer {
 	}
 
 	public void tick() {
+		if (owner == null) {
+			return;
+		}
 		acceleration = Math.max(0, acceleration - 0.005f);
 		for (int i = 0; i < MAX_SLOTS; i++) {
 			Skill skill = skills.get(i);
@@ -299,6 +306,9 @@ public class SkillSlotsHandler extends SimpleContainer {
 	}
 
 	public void startUsing(int slot) {
+		if (owner == null) {
+			return;
+		}
 		Skill skill = skills.get(slot);
 		if (skill.isEmpty()) {
 			return;
@@ -333,7 +343,7 @@ public class SkillSlotsHandler extends SimpleContainer {
 		useTick = 0;
 	}
 
-	public void setOwner(Player owner) {
+	public void setOwner(@Nullable Player owner) {
 		this.owner = owner;
 	}
 
@@ -371,12 +381,20 @@ public class SkillSlotsHandler extends SimpleContainer {
 	}
 
 	private void playChargeCompleteSound(Skill skill) {
-		if (owner.level().isClientSide || !SkillSlotsCommonConfig.playChargeCompleteSound) {
+		if (owner == null || owner.level().isClientSide || !SkillSlotsCommonConfig.playChargeCompleteSound) {
 			return;
 		}
 		@Nullable Holder<SoundEvent> sound = skill.getChargeCompleteSound();
 		if (sound != null && sound.isBound()) {
-			((ServerPlayer) owner).connection.send(new ClientboundSoundPacket(sound, SoundSource.PLAYERS, owner.position().x(), owner.position().y(), owner.position().z(), 0.5F, 1, owner.level().getRandom().nextLong()));
+			((ServerPlayer) owner).connection.send(new ClientboundSoundPacket(
+					sound,
+					SoundSource.PLAYERS,
+					owner.position().x(),
+					owner.position().y(),
+					owner.position().z(),
+					0.5F,
+					1,
+					owner.level().getRandom().nextLong()));
 		}
 	}
 
