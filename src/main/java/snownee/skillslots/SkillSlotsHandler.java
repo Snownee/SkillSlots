@@ -253,7 +253,7 @@ public class SkillSlotsHandler extends SimpleContainer {
 		acceleration = Math.max(0, acceleration - 0.005f);
 		for (int i = 0; i < MAX_SLOTS; i++) {
 			Skill skill = skills.get(i);
-			if (skill instanceof SimpleSkill simpleSkill && simpleSkill.wasOnCooldown) {
+			if (owner != null && skill instanceof SimpleSkill simpleSkill && simpleSkill.wasOnCooldown) {
 				simpleSkill.wasOnCooldown = owner.getCooldowns().isOnCooldown(skill.item.getItem());
 				if (!simpleSkill.wasOnCooldown) {
 					playChargeCompleteSound(skill);
